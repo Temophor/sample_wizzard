@@ -1,10 +1,8 @@
 import { useState, useCallback } from 'react';
 import type { SampleMetadata, SamplerSettings, GridState } from './types';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import { useAutoSampler, pitchToNoteName } from './useAutoSampler';
 import { Grid } from './Grid';
-import { convertWebmToWav } from './wavConverter';
+import { exportToKontaktZip } from './kontaktExporter';
 
 function App() {
   const [settings, setSettings] = useState<SamplerSettings>({
@@ -15,6 +13,7 @@ function App() {
 
   const [gridState, setGridState] = useState<GridState>({});
   const [notification, setNotification] = useState<{ message: string, isVisible: boolean }>({ message: '', isVisible: false });
+  const [exportStatus, setExportStatus] = useState<string | null>(null);
 
   const handleSampleCaptured = useCallback((sample: SampleMetadata) => {
     console.log('Sample Captured!', sample);
@@ -76,70 +75,19 @@ function App() {
   };
 
   // Utility to export ZIP using jszip (to be implemented)
-  const exportZip = async () => {
-    if (Object.keys(gridState).length === 0) {
-      alert("No samples recorded yet!");
-      return;
-    }
-
-    // JSZip uses a lot of memory, but for basic webm clips it's fine
+  // Professional Kontakt Export
+  const handleExport = async () => {
     try {
-      const zip = new JSZip();
-      const folder = zip.folder("Piano_Samples");
-      if (!folder) return;
-
-      const layerSize = 127 / settings.velocityLayers;
-
-      for (const pitchStr in gridState) {
-        const pitch = Number(pitchStr);
-        for (const velocityStr in gridState[pitch]) {
-          const velocity = Number(velocityStr);
-          const sample = gridState[pitch][velocity];
-
-          // Calculate MIDI velocity ranges (1-127) for this layer
-          const minVel = Math.max(1, Math.round((velocity - 1) * layerSize));
-          const maxVel = Math.min(127, Math.round(velocity * layerSize));
-
-          const minVelStr = minVel.toString().padStart(3, '0');
-          const maxVelStr = maxVel.toString().padStart(3, '0');
-
-          // Format for automatic mapping in Kontakt
-          // Token 1: Sampler, Token 2: NoteName, Token 3: MidiPitch, Token 4: MinVel, Token 5: MaxVel
-          const filename = `Sampler_${sample.noteName}_${sample.pitch}_${minVelStr}_${maxVelStr}.wav`;
-
-          // Convert WebM to standard uncompressed WAV 
-          const wavBlob = await convertWebmToWav(sample.audioBlob);
-          folder.file(filename, wavBlob);
+      await exportToKontaktZip(gridState, settings, (msg) => {
+        setExportStatus(msg);
+        if (msg === 'Export complete!') {
+          setTimeout(() => setExportStatus(null), 3000);
         }
-      }
-
-      const readmeContent = `
-INSTRUMENT IMPORT INSTRUCTIONS (NATIVE INSTRUMENTS KONTAKT)
-
-To completely automate the mapping of these samples in Kontakt, follow these steps:
-
-1. Open Kontakt and create a New Instrument.
-2. Open the Mapping Editor.
-3. Drag ALL .webm files from this folder into the Mapping Editor zone.
-4. Open the "Auto-Map Setup" dialog in the Mapping Editor.
-5. You will see that the filenames are split into tokens separated by underscores (_).
-6. Set up the tokens as follows:
-   - Token 1 (Sampler): Ignore
-   - Token 2 (NoteName): Ignore (or use for Group Name)
-   - Token 3 (MidiPitch): Set to "Root" (or Set to "Make Single Key")
-   - Token 4 (MinVel): Set to "Min Vel"
-   - Token 5 (MaxVel): Set to "Max Vel"
-7. Click Apply. 
-
-Kontakt will automatically place every sample on the correct key and assign the correct velocity range!
-      `;
-      folder.file("README_KONTAKT_IMPORT.txt", readmeContent.trim());
-
-      const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, "Piano_Samples.zip");
+      });
     } catch (err) {
       console.error("Export failed", err);
-      alert("Export failed!");
+      alert("Export failed: " + (err instanceof Error ? err.message : "Unknown error"));
+      setExportStatus(null);
     }
   };
 
@@ -156,7 +104,7 @@ Kontakt will automatically place every sample on the correct key and assign the 
         </div>
       )}
       <div className="app-header">
-        <h1>Auto-Sampler V2</h1>
+        <h1>Sample Wizzard</h1>
         <div className="hud-panel">
           <div className="hud-item">
             <span className="hud-label">Status</span>
@@ -216,10 +164,11 @@ Kontakt will automatically place every sample on the correct key and assign the 
 
           <button
             className="btn"
-            style={{ backgroundColor: '#1f6feb' }}
-            onClick={exportZip}
+            style={{ backgroundColor: exportStatus ? '#666' : '#1f6feb' }}
+            onClick={handleExport}
+            disabled={!!exportStatus}
           >
-            Export ZIP
+            {exportStatus || 'Export to Kontakt'}
           </button>
         </div>
       </div>

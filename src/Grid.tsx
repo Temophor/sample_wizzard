@@ -42,12 +42,20 @@ export const Grid = ({ gridState, velocityLayers, onCellClick, targetMode }: Gri
                             if (sample) cellClass = "grid-cell filled";
                             if (isTarget) cellClass += " target";
 
+                            const handleClick = () => {
+                                if (sample) {
+                                    const audio = new Audio(sample.audioUrl);
+                                    audio.play().catch(e => console.error("Playback failed", e));
+                                }
+                                onCellClick(pitch, layer);
+                            };
+
                             return (
                                 <div
                                     key={`${pitch}-${layer}`}
                                     className={cellClass}
-                                    onClick={() => onCellClick(pitch, layer)}
-                                    title={sample ? `Recorded: Vol ${Math.round(sample.rmsRaw)}` : `Click to target ${pitchToNoteName(pitch)} at vol ${layer}`}
+                                    onClick={handleClick}
+                                    title={sample ? `Recorded: Vol ${Math.round(sample.rmsRaw)} (Click to preview)` : `Click to target ${pitchToNoteName(pitch)} at vol ${layer}`}
                                 >
                                     {sample ? '✓' : ''}
                                 </div>
