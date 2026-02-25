@@ -196,7 +196,7 @@ input[type=range]:focus {
   transform: none;
 }
 
-/* Grid Styles */
+/* Grid Styles (Horizontal Layout) */
 .grid-container {
   display: flex;
   flex-direction: column;
@@ -204,37 +204,25 @@ input[type=range]:focus {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
+  height: 100%;
+  /* Take remaining space */
 }
 
-.grid-header-row {
-  display: flex;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-inactive);
-}
-
-.grid-corner {
-  width: 80px;
-  padding: 10px;
-  border-right: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.grid-col-header {
-  width: var(--grid-cell-size);
-  padding: 10px 0;
-  text-align: center;
-  flex-shrink: 0;
+.grid-container.horizontal {
+  /* No special top-level flex needed, handled internally */
 }
 
 .grid-scroll-area {
   overflow-y: auto;
   overflow-x: auto;
   flex-grow: 1;
+  padding-bottom: 10px;
+}
+
+.grid-matrix {
+  display: flex;
+  flex-direction: column;
+  min-width: max-content;
 }
 
 .grid-row {
@@ -246,28 +234,26 @@ input[type=range]:focus {
   background: rgba(255, 255, 255, 0.02);
 }
 
-.grid-row-header {
+.grid-row-header-sticky {
   width: 80px;
+  min-width: 80px;
   padding: 8px 10px;
   border-right: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-size: 0.85rem;
-  font-weight: 500;
-  background: rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  background: rgba(22, 27, 34, 0.95);
+  /* matching panel bg */
   position: sticky;
   left: 0;
-  z-index: 10;
-}
-
-.grid-row-midi {
-  font-size: 0.7rem;
-  color: var(--text-inactive);
+  z-index: 20;
 }
 
 .grid-cell {
   width: var(--grid-cell-size);
+  min-width: var(--grid-cell-size);
   height: var(--grid-cell-size);
   flex-shrink: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.02);
@@ -305,6 +291,72 @@ input[type=range]:focus {
   animation: pulse-target 1.5s infinite alternate;
   box-shadow: 0 0 15px rgba(210, 168, 255, 0.5);
   z-index: 5;
+}
+
+/* LIVE FEEDBACK ANIMATION */
+.grid-cell.live-feedback {
+  background: rgba(88, 166, 255, 0.8) !important;
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.8);
+  color: #fff;
+  z-index: 10;
+  transition: background 0.05s ease, box-shadow 0.05s ease;
+}
+
+/* Keyboard Row Styles */
+.keyboard-row {
+  display: flex;
+  border-top: 2px solid var(--border-color);
+  background: #111;
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+}
+
+.piano-key {
+  width: var(--grid-cell-size);
+  min-width: var(--grid-cell-size);
+  height: 100px;
+  border-right: 1px solid #000;
+  border-bottom: 2px solid #000;
+  border-radius: 0 0 4px 4px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+  transition: background 0.1s ease;
+}
+
+.piano-key.white {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.piano-key.black {
+  background: #222;
+  color: #888;
+  height: 60px;
+  border: 1px solid #000;
+  /*! box-shadow: 2px 2px 5px rgba(0,0,0,0.5); */
+  /* Overlap handled by simple columns for now */
+}
+
+.key-label {
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Keyboard Active State (Live Feedback) */
+.piano-key.white.active {
+  background: #aab8c2 !important;
+  box-shadow: inset 0 0 20px rgba(88, 166, 255, 0.5);
+}
+
+.piano-key.black.active {
+  background: #334455 !important;
+  box-shadow: inset 0 0 20px rgba(88, 166, 255, 0.5);
 }
 
 @keyframes pulse {

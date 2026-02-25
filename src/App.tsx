@@ -178,6 +178,12 @@ function App() {
         velocityLayers={settings.velocityLayers}
         onCellClick={handleCellClick}
         targetMode={settings.targetMode}
+        currentPitch={currentPitch}
+        liveVelocityLayer={
+          currentRMS > settings.noiseFloor
+            ? Math.max(1, Math.min(settings.velocityLayers, Math.ceil((Math.min(currentRMS, 100) / 100) * settings.velocityLayers)))
+            : null
+        }
       />
     </div>
   );
