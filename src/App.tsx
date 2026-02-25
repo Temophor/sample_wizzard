@@ -104,7 +104,7 @@ function App() {
         </div>
       )}
       <div className="app-header">
-        <h1>Sample Wizzard</h1>
+        <h1>Aura Sample</h1>
         <div className="hud-panel">
           <div className="hud-item">
             <span className="hud-label">Status</span>
