@@ -8,7 +8,7 @@ import { convertWebmToWav } from './wavConverter';
  * SFZ is a standardized format that Kontakt can import.
  */
 export const generateSFZ = (gridState: GridState, settings: SamplerSettings): string => {
-    let sfzContent = '// Mapped Aura Sample Export\n';
+    let sfzContent = '// Mapped Clever Sample Export\n';
     sfzContent += '// Drag this file into the Kontakt Rack to load\n\n';
     sfzContent += '<group>\n\n';
 
@@ -138,7 +138,7 @@ If dragging the 'instrument.sfz' file directly into Kontakt does not work, you c
     const content = await zip.generateAsync({ type: 'blob' });
 
     onProgress?.('Downloading...');
-    saveAs(content, 'AuraSample_Kontakt_Export.zip');
+    saveAs(content, 'CleverSample_Kontakt_Export.zip');
 
     onProgress?.('Export complete!');
 };
