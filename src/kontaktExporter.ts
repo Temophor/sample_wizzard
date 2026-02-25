@@ -138,7 +138,7 @@ If dragging the 'instrument.sfz' file directly into Kontakt does not work, you c
     const content = await zip.generateAsync({ type: 'blob' });
 
     onProgress?.('Downloading...');
-    saveAs(content, 'SampleWizzard_Kontakt_Export.zip');
+    saveAs(content, 'AuraSample_Kontakt_Export.zip');
 
     onProgress?.('Export complete!');
 };
