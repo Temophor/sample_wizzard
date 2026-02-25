@@ -66,12 +66,13 @@ function App() {
   };
 
   const handleCellClick = (pitch: number, velocity: number) => {
-    // If there's already a sample, maybe play it? (Future feature)
-    // For now, set target mode for empty cells or to override
-    setSettings(prev => ({
-      ...prev,
-      targetMode: { pitch, velocity }
-    }));
+    setSettings(prev => {
+      // If clicking the current target, clear it
+      if (prev.targetMode && prev.targetMode.pitch === pitch && prev.targetMode.velocity === velocity) {
+        return { ...prev, targetMode: null };
+      }
+      return { ...prev, targetMode: { pitch, velocity } };
+    });
   };
 
   // Utility to export ZIP using jszip (to be implemented)
