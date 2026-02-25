@@ -49,9 +49,25 @@ export const audioBufferToWav = (buffer: AudioBuffer): Blob => {
     }
 
     let offset = 0;
+    const fadeDurationMs = 5; // 5ms fade
+    const fadeSamples = Math.floor((buffer.sampleRate * fadeDurationMs) / 1000);
+    const totalSamples = buffer.length;
+
     while (pos < bufferArray.byteLength) {
+        // Calculate fade multiplier (0.0 to 1.0)
+        let fadeMultiplier = 1.0;
+
+        if (offset < fadeSamples) {
+            // Fade In
+            fadeMultiplier = offset / fadeSamples;
+        } else if (offset > totalSamples - fadeSamples) {
+            // Fade Out
+            fadeMultiplier = (totalSamples - offset) / fadeSamples;
+        }
+
         for (let i = 0; i < numOfChan; i++) {
-            let sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
+            let sample = channels[i][offset] * fadeMultiplier; // apply fade
+            sample = Math.max(-1, Math.min(1, sample)); // clamp
             sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF; // scale to 16-bit
             view.setInt16(pos, sample, true); // write 16-bit
             pos += 2;
