@@ -150,7 +150,19 @@ function App() {
           />
         </div>
 
-        <div style={{ color: 'var(--text-active)', fontWeight: 'bold' }}>
+        <div
+          style={{
+            color: settings.targetMode ? 'var(--text-active)' : 'var(--text-inactive)',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            userSelect: 'none'
+          }}
+          onClick={() => setSettings(prev => ({ ...prev, targetMode: null }))}
+          title="Click to return to Free Play mode"
+        >
           {targetDisplay}
         </div>
 
@@ -168,7 +180,7 @@ function App() {
             onClick={handleExport}
             disabled={!!exportStatus}
           >
-            {exportStatus || 'Export to Kontakt'}
+            {exportStatus || 'Export'}
           </button>
         </div>
       </div>
