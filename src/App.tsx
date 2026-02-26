@@ -134,7 +134,7 @@ function App() {
       )}
 
       <div className="app-header">
-        <h1>Clever Sample</h1>
+        <h1>Clever Sampler</h1>
         <div className="hud-panel">
           <div className="hud-item">
             <span className="hud-label">Status</span>
