@@ -267,6 +267,11 @@ function App() {
             <h2>How to use Clever Sampler</h2>
             <p>Welcome to Clever Sampler! This tool allows you to automatically map your acoustic instrument samples into a format playable by Native Instruments Kontakt.</p>
 
+            <div className="disclaimer-box" style={{ marginTop: '15px', marginBottom: '30px' }}>
+              <h4>Important Note: No VST Hosting</h4>
+              <p>Please note that this application does <strong>not</strong> load DAW VST plugins directly into the browser. It is a standalone recording environment meant to capture live audio from your microphone or audio interface input. To sample a VST, you must route your DAW's output back into your system's recording input (e.g., using loopback software or an audio interface routing matrix) so the browser can "hear" the VST.</p>
+            </div>
+
             <h3>1. Recording Samples</h3>
             <p>Click <strong>Start Engine</strong> and begin playing your instrument. The visual piano will highlight the notes it hears. The grid corresponds to velocity (loudness) layers.</p>
             <ul>
@@ -299,11 +304,6 @@ function App() {
             <h2>About Clever Code Creations</h2>
             <p>We are dedicated to building clever, intuitive applications that make your workflow smoother and your life better.</p>
             <p><strong>Clever Sampler</strong> was built to solve the tedious process of manually slicing, fading, and mapping hundreds of audio files when creating custom virtual instruments. By bridging the gap between browser-based audio processing and industry-standard formats like SFZ, we hope to empower musicians and sound designers to capture their unique sounds faster than ever before.</p>
-
-            <div className="disclaimer-box">
-              <h4>Note on VST Plugins</h4>
-              <p>Please note that this application does <strong>not</strong> load DAW VST plugins directly into the browser. It is a standalone recording environment meant to capture live audio from your microphone or audio interface input. To sample a VST, you must route your DAW's output back into your system's recording input (e.g., using loopback software or an audio interface routing matrix) so the browser can "hear" the VST.</p>
-            </div>
           </div>
         )}
       </div>
