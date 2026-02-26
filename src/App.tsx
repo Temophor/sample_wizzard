@@ -92,6 +92,8 @@ function App() {
     }
   };
 
+  const [showImpressum, setShowImpressum] = useState(false);
+
   const currentNoteDisplay = currentPitch ? pitchToNoteName(currentPitch) : '--';
   const targetDisplay = settings.targetMode
     ? `Target: ${pitchToNoteName(settings.targetMode.pitch)} Vol ${settings.targetMode.velocity}`
@@ -104,6 +106,33 @@ function App() {
           {notification.message}
         </div>
       )}
+
+      {showImpressum && (
+        <div className="modal-overlay" onClick={() => setShowImpressum(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Impressum</h2>
+              <button className="close-btn" onClick={() => setShowImpressum(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <p><strong>Angaben gemäß § 5 TMG:</strong></p>
+              <p>
+                Florian Maurer<br />
+                Kochstraße 8<br />
+                30451 Hannover
+              </p>
+              <p><strong>Kontakt:</strong></p>
+              <p>
+                E-Mail: <a href="mailto:clever.code.creations@gmail.com">clever.code.creations@gmail.com</a>
+              </p>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-inactive)', marginTop: '20px' }}>
+                Haftungsausschluss: Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="app-header">
         <h1>Clever Sample</h1>
         <div className="hud-panel">
@@ -205,6 +234,11 @@ function App() {
             : null
         }
       />
+
+      <div className="app-footer">
+        <span>© 2026 Clever Code Creations</span>
+        <button className="text-link" onClick={() => setShowImpressum(true)}>Impressum</button>
+      </div>
     </div>
   );
 }
