@@ -95,7 +95,7 @@ function App() {
   const currentNoteDisplay = currentPitch ? pitchToNoteName(currentPitch) : '--';
   const targetDisplay = settings.targetMode
     ? `Target: ${pitchToNoteName(settings.targetMode.pitch)} Vol ${settings.targetMode.velocity}`
-    : 'Free Play';
+    : '';
 
   return (
     <div className="app-container">
@@ -153,16 +153,23 @@ function App() {
 
         <div
           style={{
-            color: settings.targetMode ? 'var(--text-active)' : 'var(--text-inactive)',
+            width: '180px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-active)',
             fontWeight: 'bold',
-            cursor: 'pointer',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            backgroundColor: 'rgba(255,255,255,0.05)',
-            userSelect: 'none'
+            cursor: settings.targetMode ? 'pointer' : 'default',
+            borderRadius: '6px',
+            backgroundColor: settings.targetMode ? 'rgba(88, 166, 255, 0.15)' : 'transparent',
+            border: settings.targetMode ? '1px solid rgba(88, 166, 255, 0.4)' : '1px solid transparent',
+            userSelect: 'none',
+            transition: 'all 0.2s ease',
+            fontSize: '0.9rem'
           }}
-          onClick={() => setSettings(prev => ({ ...prev, targetMode: null }))}
-          title="Click to return to Free Play mode"
+          onClick={() => { if (settings.targetMode) setSettings(prev => ({ ...prev, targetMode: null })) }}
+          title={settings.targetMode ? "Click to clear target mode" : ""}
         >
           {targetDisplay}
         </div>
