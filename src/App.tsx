@@ -287,9 +287,15 @@ function App() {
             </ul>
 
             <h3>3. Importing into Kontakt (Single Key Mapping)</h3>
+
+            <div className="disclaimer-box" style={{ marginTop: '10px', marginBottom: '20px' }}>
+              <h4>Attention: Use Kontakt Standalone</h4>
+              <p>Do <strong>not</strong> open the VST plugin Kontakt in your DAW! You must start the program <strong>Kontakt</strong> (Standalone App). Only there can you create new instruments.</p>
+            </div>
+
             <p>This tool is designed specifically with Kontakt's <strong>"Set to single key"</strong> feature in mind to prevent unwanted time-stretching.</p>
             <ol>
-              <li>Open Kontakt and create a new Default Instrument.</li>
+              <li>Open Kontakt (Standalone) and create a new Default Instrument.</li>
               <li>Open the instrument editor (wrench icon) and go to the <strong>Mapping Editor</strong>.</li>
               <li>Drag the `mapping.sfz` file directly from your computer into the Mapping Editor grid.</li>
               <li><strong>Crucial Step:</strong> Select all zones (Ctrl+A / Cmd+A).</li>
