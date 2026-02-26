@@ -26,6 +26,33 @@ export const Grid = ({ gridState, velocityLayers, onCellClick, targetMode, curre
         return [1, 3, 6, 8, 10].includes(note); // C#, D#, F#, G#, A#
     };
 
+    // Helper for playing a simple preview tone
+    const playTone = (pitch: number) => {
+        try {
+            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            // Convert MIDI pitch to frequency (A4 = 69, 440Hz)
+            const freq = 440 * Math.pow(2, (pitch - 69) / 12);
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+            // Simple envelope to avoid clicks
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        } catch (e) {
+            console.error("Audio Context failed to play tone:", e);
+        }
+    };
+
     return (
         <div className="grid-container horizontal">
             <div className="grid-scroll-area">
@@ -75,15 +102,23 @@ export const Grid = ({ gridState, velocityLayers, onCellClick, targetMode, curre
                             let keyClass = isBlack ? "piano-key black" : "piano-key white";
                             if (isActive) keyClass += " active";
 
+                            // Allow hovering to look clickable
+                            keyClass += " cursor-pointer";
+
                             // Special layout logic: black keys need to overlap
                             // We use a CSS grid where each pitch is a column
                             return (
                                 <div
                                     key={`key-${pitch}`}
                                     className={keyClass}
-                                    title={pitchToNoteName(pitch)}
+                                    title={`Click to preview ${pitchToNoteName(pitch)}`}
+                                    onMouseDown={(e) => {
+                                        e.preventDefault(); // Prevent text selection
+                                        playTone(pitch);
+                                    }}
+                                    style={{ cursor: 'pointer' }}
                                 >
-                                    <span className="key-label">{pitchToNoteName(pitch)}</span>
+                                    <span className="key-label pointer-events-none">{pitchToNoteName(pitch)}</span>
                                 </div>
                             );
                         })}
